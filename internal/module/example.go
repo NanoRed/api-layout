@@ -17,17 +17,17 @@ func NewExample(svcExample *service.Example) *Example {
 	return example
 }
 
-// @Summary say hello
-// @Description only for example
-// @ID ExampleHello
+// @Summary Get an example
+// @Description Get an example by id
+// @ID get-an-example
+// @Accept json
 // @Produce json
-// @Param authorization header string true "用户ID 会话令牌" example(50123 42e782dc8e131d6989dc772c2c3e87a3)
-// @Param game_id query int true "游戏ID" example(1001)
-// @Success 200 {object} Response{data=ZonesResponse} "成功"
-// @Failure 400 {object} Response "错误请求"
-// @Failure 401 {object} Response "未授权"
+// @Param authorization header string true "auth token" example(42e782dc8e131d6989dc772c2c3e87a3)
+// @Param id query int true "example id" example(10001)
+// @Success 200 {object} common.Response{data=model.Example} "success"
+// @Failure 400 {object} common.Response "bad request"
+// @Failure 401 {object} common.Response "unauthorized"
 // @Router /module/line/zones [get]
 func (e *Example) Get(ctx *gin.Context) {
 	// id, err := strconv.Atoi(ctx.Query("id"))
-
 }

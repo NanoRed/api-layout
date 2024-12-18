@@ -1,0 +1,144 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "KDM accelerator API",
+        "title": "KDM API",
+        "contact": {
+            "name": "red",
+            "email": "radixholms@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "basePath": "/api/v2",
+    "paths": {
+        "/module/line/zones": {
+            "get": {
+                "description": "Get an example by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get an example",
+                "operationId": "get-an-example",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "42e782dc8e131d6989dc772c2c3e87a3",
+                        "description": "auth token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "example": 10001,
+                        "description": "example id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.Example"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "$ref": "#/definitions/common.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/common.Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "common.Code": {
+            "type": "integer",
+            "enum": [
+                0,
+                1
+            ],
+            "x-enum-varnames": [
+                "CodeSuccess",
+                "CodeFailure"
+            ]
+        },
+        "common.Response": {
+            "type": "object",
+            "required": [
+                "code",
+                "info"
+            ],
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/common.Code"
+                        }
+                    ],
+                    "example": 0
+                },
+                "data": {
+                    "x-nullable": true
+                },
+                "info": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "model.Example": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "hash": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "number": {
+                    "type": "integer"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "time": {
+                    "type": "string"
+                },
+                "varchar": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

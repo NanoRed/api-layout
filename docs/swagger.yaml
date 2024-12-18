@@ -1,0 +1,93 @@
+basePath: /api/v2
+definitions:
+  common.Code:
+    enum:
+    - 0
+    - 1
+    type: integer
+    x-enum-varnames:
+    - CodeSuccess
+    - CodeFailure
+  common.Response:
+    properties:
+      code:
+        allOf:
+        - $ref: '#/definitions/common.Code'
+        example: 0
+      data:
+        x-nullable: true
+      info:
+        example: success
+        type: string
+    required:
+    - code
+    - info
+    type: object
+  model.Example:
+    properties:
+      code:
+        type: integer
+      created_at:
+        type: string
+      hash:
+        type: string
+      id:
+        type: integer
+      number:
+        type: integer
+      text:
+        type: string
+      time:
+        type: string
+      varchar:
+        type: string
+    type: object
+info:
+  contact:
+    email: radixholms@gmail.com
+    name: red
+  description: KDM accelerator API
+  title: KDM API
+  version: "1.0"
+paths:
+  /module/line/zones:
+    get:
+      consumes:
+      - application/json
+      description: Get an example by id
+      operationId: get-an-example
+      parameters:
+      - description: auth token
+        example: 42e782dc8e131d6989dc772c2c3e87a3
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: example id
+        example: 10001
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Example'
+              type: object
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "401":
+          description: unauthorized
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: Get an example
+swagger: "2.0"

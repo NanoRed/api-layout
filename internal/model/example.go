@@ -16,7 +16,7 @@ type Example struct {
 	Text      string         `gorm:"column:text;type:text;not null" json:"text"`
 	Time      common.Time    `gorm:"column:time;type:timestamp;not null" json:"time"`
 	CreatedAt time.Time      `gorm:"index" json:"created_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index;default:null" json:"deleted_at"` // soft delete
+	DeletedAt gorm.DeletedAt `gorm:"index;default:null" json:"-"` // soft delete
 }
 
 func (Example) TableName() string {
