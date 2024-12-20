@@ -1,0 +1,7 @@
+listen:
+  host: "127.0.0.1"
+  port: 8714
+timezone: "Asia/Shanghai"
+database:
+  main: "postgres://test:123456@127.0.0.1:5432/api?sslmode=disable&time_zone=Asia/Shanghai"
+  cache: "redis://test:123456@127.0.0.1:6789/0"

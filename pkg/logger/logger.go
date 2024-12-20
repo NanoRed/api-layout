@@ -57,8 +57,8 @@ func init() {
 	defaultLogger = NewLogger(log.New(os.Stdout, "", flag))
 }
 
-// RegisterLogger register a logger
-func RegisterLogger(flag int, prefix string, out io.Writer) {
+// SetDefaultLogger set default logger
+func SetDefaultLogger(flag int, prefix string, out io.Writer) {
 	defaultLogger = NewLogger(log.New(out, prefix, flag))
 }
 

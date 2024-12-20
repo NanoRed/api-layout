@@ -1,14 +1,13 @@
 package service
 
 import (
+	"api-layout/internal/database"
 	"api-layout/internal/model"
 	"context"
 	"encoding/json"
 	"strconv"
 	"time"
 
-	"github.com/redis/go-redis/v9"
-	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -17,14 +16,14 @@ var (
 )
 
 type Example struct {
-	db    *gorm.DB
-	redis *redis.Client
+	db    *database.Postgres
+	cache *database.Redis
 }
 
-func NewExample(db *gorm.DB, redis *redis.Client) *Example {
+func NewExample(db *database.Postgres, cache *database.Redis) *Example {
 	example := &Example{
 		db:    db,
-		redis: redis,
+		cache: cache,
 	}
 	return example
 }
@@ -32,12 +31,12 @@ func NewExample(db *gorm.DB, redis *redis.Client) *Example {
 func (e *Example) Find(ctx context.Context, id uint64) (data *model.Example, err error) {
 	data = &model.Example{}
 	key := strconv.FormatUint(id, 10)
-	buf, err := e.redis.Get(ctx, key).Bytes()
+	buf, err := e.cache.Get(ctx, key).Bytes()
 	if err == nil {
 		if err = json.Unmarshal(buf, data); err == nil {
 			return
 		}
-		e.redis.Del(ctx, key)
+		e.cache.Del(ctx, key)
 	}
 	result := e.db.WithContext(ctx).
 		Where("id = ?", id).
@@ -46,7 +45,7 @@ func (e *Example) Find(ctx context.Context, id uint64) (data *model.Example, err
 		return
 	}
 	if buf, err := json.Marshal(data); err == nil {
-		e.redis.SetEx(ctx, key, buf, defaultExpiration)
+		e.cache.SetEx(ctx, key, buf, defaultExpiration)
 	}
 	return
 }

@@ -2,6 +2,7 @@ package database
 
 import (
 	"api-layout/pkg/logger"
+	"fmt"
 	"time"
 
 	"gorm.io/driver/postgres"
@@ -11,11 +12,10 @@ import (
 )
 
 type Postgres struct {
-	db *gorm.DB
+	*gorm.DB
 }
 
-func NewPostgres(dsn string) *Postgres {
-	pg := &Postgres{}
+func NewPostgres(dsn string) (pg *Postgres, err error) {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: gormLogger.New(
 			logger.Default().Logger,
@@ -27,36 +27,34 @@ func NewPostgres(dsn string) *Postgres {
 			}),
 	})
 	if err != nil {
-		logger.Fatal("can not open database: %v", err)
+		err = fmt.Errorf("can not open database: %v", err)
+		return
 	}
-	pg.db = db
 	sqlDB, err := db.DB()
 	if err != nil {
-		logger.Fatal("can not get database object: %v", err)
+		err = fmt.Errorf("can not get database object: %v", err)
+		return
 	}
 	sqlDB.SetMaxOpenConns(60)
 	sqlDB.SetMaxIdleConns(30)
 	sqlDB.SetConnMaxIdleTime(time.Minute)
 	sqlDB.SetConnMaxLifetime(time.Minute * 5)
-	return pg
+	pg = &Postgres{db}
+	return
 }
 
-func (p *Postgres) DB() *gorm.DB {
-	return p.db
-}
-
-func (p *Postgres) UsePrometheus(name, addr, user, password string) (err error) {
-	return p.db.Use(prometheus.New(prometheus.Config{
-		DBName:          name,
+func (p *Postgres) UsePrometheus(dbname, paddr, puser, ppsw string) (err error) {
+	return p.Use(prometheus.New(prometheus.Config{
+		DBName:          dbname,
 		RefreshInterval: 15,
-		PushAddr:        addr,
-		PushUser:        user,
-		PushPassword:    password,
+		PushAddr:        paddr,
+		PushUser:        puser,
+		PushPassword:    ppsw,
 	}))
 }
 
 func (p *Postgres) Close() (err error) {
-	sqlDB, err := p.db.DB()
+	sqlDB, err := p.DB.DB()
 	if err != nil {
 		return
 	}

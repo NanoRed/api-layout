@@ -1,27 +1,33 @@
-basePath: /api/v2
+basePath: /api
 definitions:
   common.Code:
     enum:
     - 0
     - 1
+    - 2
+    - 3
+    - 4
     type: integer
     x-enum-varnames:
     - CodeSuccess
     - CodeFailure
+    - CodeIllegal
+    - CodeUnauthorized
+    - CodeInternal
   common.Response:
     properties:
       code:
         allOf:
         - $ref: '#/definitions/common.Code'
         example: 0
-      data:
-        x-nullable: true
-      info:
+      message:
         example: success
         type: string
+      payload:
+        x-nullable: true
     required:
     - code
-    - info
+    - message
     type: object
   model.Example:
     properties:
@@ -46,23 +52,15 @@ info:
   contact:
     email: radixholms@gmail.com
     name: red
-  description: KDM accelerator API
-  title: KDM API
+  description: API Layout
+  title: API Layout
   version: "1.0"
 paths:
-  /module/line/zones:
+  /module/example/data:
     get:
-      consumes:
-      - application/json
       description: Get an example by id
       operationId: get-an-example
       parameters:
-      - description: auth token
-        example: 42e782dc8e131d6989dc772c2c3e87a3
-        in: header
-        name: authorization
-        required: true
-        type: string
       - description: example id
         example: 10001
         in: query
@@ -73,21 +71,49 @@ paths:
       - application/json
       responses:
         "200":
-          description: success
+          description: ok
           schema:
             allOf:
             - $ref: '#/definitions/common.Response'
             - properties:
-                data:
+                payload:
                   $ref: '#/definitions/model.Example'
               type: object
         "400":
           description: bad request
           schema:
             $ref: '#/definitions/common.Response'
-        "401":
-          description: unauthorized
+        "500":
+          description: internal server error
           schema:
             $ref: '#/definitions/common.Response'
       summary: Get an example
+    put:
+      consumes:
+      - application/json
+      description: Put an example
+      operationId: put-an-example
+      parameters:
+      - description: data to be saved
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Example'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            $ref: '#/definitions/common.Response'
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: Put an example
 swagger: "2.0"

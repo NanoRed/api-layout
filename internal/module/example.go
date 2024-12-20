@@ -1,7 +1,10 @@
 package module
 
 import (
+	"api-layout/internal/model"
+	"api-layout/internal/module/common"
 	"api-layout/internal/service"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,17 +20,56 @@ func NewExample(svcExample *service.Example) *Example {
 	return example
 }
 
+func (e *Example) Attach(router *gin.Engine) {
+	example := router.Group("/api/module/example")
+	{
+		example.GET("/data", e.Get)
+		example.PUT("/data", e.Put)
+	}
+}
+
 // @Summary Get an example
 // @Description Get an example by id
 // @ID get-an-example
+// @Produce json
+// @Param id query int true "example id" example(10001)
+// @Success 200 {object} common.Response{payload=model.Example} "ok"
+// @Failure 400 {object} common.Response "bad request"
+// @Failure 500 {object} common.Response "internal server error"
+// @Router /module/example/data [get]
+func (e *Example) Get(ctx *gin.Context) {
+	id, err := strconv.ParseUint(ctx.Query("id"), 10, 64)
+	if err != nil {
+		common.CodeIllegal.Response(ctx, nil)
+		return
+	}
+	data, err := e.svcExample.Find(ctx, id)
+	if err != nil {
+		common.CodeInternal.Response(ctx, nil)
+		return
+	}
+	common.CodeSuccess.Response(ctx, data)
+}
+
+// @Summary Put an example
+// @Description Put an example
+// @ID put-an-example
 // @Accept json
 // @Produce json
-// @Param authorization header string true "auth token" example(42e782dc8e131d6989dc772c2c3e87a3)
-// @Param id query int true "example id" example(10001)
-// @Success 200 {object} common.Response{data=model.Example} "success"
+// @Param data body model.Example true "data to be saved"
+// @Success 200 {object} common.Response "ok"
 // @Failure 400 {object} common.Response "bad request"
-// @Failure 401 {object} common.Response "unauthorized"
-// @Router /module/line/zones [get]
-func (e *Example) Get(ctx *gin.Context) {
-	// id, err := strconv.Atoi(ctx.Query("id"))
+// @Failure 500 {object} common.Response "internal server error"
+// @Router /module/example/data [put]
+func (e *Example) Put(ctx *gin.Context) {
+	var data model.Example
+	if err := ctx.ShouldBindJSON(&data); err != nil {
+		common.CodeIllegal.Response(ctx, nil)
+		return
+	}
+	if err := e.svcExample.Save(ctx, &data); err != nil {
+		common.CodeInternal.Response(ctx, nil)
+		return
+	}
+	common.CodeSuccess.Response(ctx, nil)
 }

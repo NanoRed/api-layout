@@ -1,30 +1,25 @@
 package database
 
 import (
-	"api-layout/pkg/logger"
+	"fmt"
 
 	"github.com/redis/go-redis/v9"
 )
 
 type Redis struct {
-	rdb *redis.Client
+	*redis.Client
 }
 
-func NewRedis(dsn string) *Redis {
-	rds := &Redis{}
+func NewRedis(dsn string) (r *Redis, err error) {
 	opt, err := redis.ParseURL(dsn)
 	if err != nil {
-		logger.Fatal("can not parse dsn: %s %v", dsn, err)
+		err = fmt.Errorf("can not parse dsn: %s %v", dsn, err)
+		return
 	}
-	rdb := redis.NewClient(opt)
-	rds.rdb = rdb
-	return rds
-}
-
-func (r *Redis) DB() *redis.Client {
-	return r.rdb
+	r = &Redis{redis.NewClient(opt)}
+	return
 }
 
 func (r *Redis) Close() (err error) {
-	return r.rdb.Close()
+	return r.Client.Close()
 }

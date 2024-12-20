@@ -18,26 +18,15 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/module/line/zones": {
+        "/module/example/data": {
             "get": {
                 "description": "Get an example by id",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
                 "summary": "Get an example",
                 "operationId": "get-an-example",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "example": "42e782dc8e131d6989dc772c2c3e87a3",
-                        "description": "auth token",
-                        "name": "authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "integer",
                         "example": 10001,
@@ -49,7 +38,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "success",
+                        "description": "ok",
                         "schema": {
                             "allOf": [
                                 {
@@ -58,7 +47,7 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        "data": {
+                                        "payload": {
                                             "$ref": "#/definitions/model.Example"
                                         }
                                     }
@@ -72,8 +61,50 @@ const docTemplate = `{
                             "$ref": "#/definitions/common.Response"
                         }
                     },
-                    "401": {
-                        "description": "unauthorized",
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/common.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Put an example",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Put an example",
+                "operationId": "put-an-example",
+                "parameters": [
+                    {
+                        "description": "data to be saved",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Example"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "$ref": "#/definitions/common.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "$ref": "#/definitions/common.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
                         "schema": {
                             "$ref": "#/definitions/common.Response"
                         }
@@ -87,18 +118,24 @@ const docTemplate = `{
             "type": "integer",
             "enum": [
                 0,
-                1
+                1,
+                2,
+                3,
+                4
             ],
             "x-enum-varnames": [
                 "CodeSuccess",
-                "CodeFailure"
+                "CodeFailure",
+                "CodeIllegal",
+                "CodeUnauthorized",
+                "CodeInternal"
             ]
         },
         "common.Response": {
             "type": "object",
             "required": [
                 "code",
-                "info"
+                "message"
             ],
             "properties": {
                 "code": {
@@ -109,12 +146,12 @@ const docTemplate = `{
                     ],
                     "example": 0
                 },
-                "data": {
-                    "x-nullable": true
-                },
-                "info": {
+                "message": {
                     "type": "string",
                     "example": "success"
+                },
+                "payload": {
+                    "x-nullable": true
                 }
             }
         },
@@ -154,10 +191,10 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "",
-	BasePath:         "/api/v2",
+	BasePath:         "/api",
 	Schemes:          []string{},
-	Title:            "KDM API",
-	Description:      "KDM accelerator API",
+	Title:            "API Layout",
+	Description:      "API Layout",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
