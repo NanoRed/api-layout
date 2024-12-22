@@ -73,8 +73,10 @@ func main() {
 
 	// module
 	modExample := module.NewExample(svcExample)
+	modSwagger := module.NewSwagger()
 
 	api.Install(modExample)
+	api.Install(modSwagger)
 
 	if err := api.Run(); err != nil {
 		logger.Error("api error: %v", err)
