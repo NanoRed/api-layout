@@ -4,6 +4,7 @@ import (
 	"api-layout/internal/model"
 	"api-layout/internal/module/common"
 	"api-layout/internal/service"
+	"api-layout/pkg/logger"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -40,11 +41,13 @@ func (e *Example) Attach(router *gin.Engine) {
 func (e *Example) Get(ctx *gin.Context) {
 	id, err := strconv.ParseUint(ctx.Query("id"), 10, 64)
 	if err != nil {
+		logger.Error("failed to parse id: %v", err)
 		common.CodeIllegal.Response(ctx, nil)
 		return
 	}
 	data, err := e.svcExample.Find(ctx, id)
 	if err != nil {
+		logger.Error("failed to find example: %v", err)
 		common.CodeInternal.Response(ctx, nil)
 		return
 	}
@@ -64,10 +67,12 @@ func (e *Example) Get(ctx *gin.Context) {
 func (e *Example) Put(ctx *gin.Context) {
 	var data model.Example
 	if err := ctx.ShouldBindJSON(&data); err != nil {
+		logger.Error("failed to bind json: %v", err)
 		common.CodeIllegal.Response(ctx, nil)
 		return
 	}
 	if err := e.svcExample.Save(ctx, &data); err != nil {
+		logger.Error("failed to save example: %v", err)
 		common.CodeInternal.Response(ctx, nil)
 		return
 	}

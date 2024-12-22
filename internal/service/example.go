@@ -25,6 +25,7 @@ func NewExample(db *database.Postgres, cache *database.Redis) *Example {
 		db:    db,
 		cache: cache,
 	}
+	db.AutoMigrate(&model.Example{})
 	return example
 }
 

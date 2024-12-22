@@ -32,20 +32,28 @@ definitions:
   model.Example:
     properties:
       code:
+        example: 1
         type: integer
       created_at:
+        example: "2021-01-01T00:00:00Z"
         type: string
       hash:
+        example: a8306c3367a271d245ba59fe4a8f9eaf
         type: string
       id:
+        example: 10001
         type: integer
       number:
+        example: 1
         type: integer
       text:
+        example: text
         type: string
       time:
+        example: "2021-01-01T00:00:00Z"
         type: string
       varchar:
+        example: varchar
         type: string
     type: object
 info:

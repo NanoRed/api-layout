@@ -152,28 +152,36 @@
             "type": "object",
             "properties": {
                 "code": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "created_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
                 },
                 "hash": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "a8306c3367a271d245ba59fe4a8f9eaf"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 10001
                 },
                 "number": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "text": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "text"
                 },
                 "time": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
                 },
                 "varchar": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "varchar"
                 }
             }
         }
