@@ -3,9 +3,9 @@ package service
 import (
 	"api-layout/internal/database"
 	"api-layout/internal/model"
+	"api-layout/internal/service/common"
 	"context"
 	"encoding/json"
-	"strconv"
 	"time"
 
 	"gorm.io/gorm/clause"
@@ -31,7 +31,7 @@ func NewExample(db *database.Postgres, cache *database.Redis) *Example {
 
 func (e *Example) Find(ctx context.Context, id uint64) (data *model.Example, err error) {
 	data = &model.Example{}
-	key := strconv.FormatUint(id, 10)
+	key := common.CacheKeyExample.Suffix(id)
 	buf, err := e.cache.Get(ctx, key).Bytes()
 	if err == nil {
 		if err = json.Unmarshal(buf, data); err == nil {
